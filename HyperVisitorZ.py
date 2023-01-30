@@ -1,8 +1,17 @@
 import sys
 import os
+from sys import argv
+
+try:
+    arr = str(argv[1])
+except:
+    print("Error! Insufficient argument entered. Please try again!")
+    exit()
+
 
 def main():
 	menu()
+
 
 def menu():
     refresh()
@@ -72,11 +81,17 @@ def credit():
 
 def disable():
     os.system("bcdedit /set hypervisorlaunchtype off")
+    os.system("Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All")
+    os.system("dism /online /disable-feature /featurename:Microsoft-hyper-v-all")
+    try:
+        os.system("Set-VMProcessor -VMName" + arr + "-ExposeVirtualizationExtensions $true")
+    except:
+        print("Couldn't enable nested virtualization. Perhaps VMWare isn't installed.")
     print("Disabling....")
     os.system("shutdown -r -t 0")
 
 def enable():
-    os.system("bcdedit /set hypervisorlaunchtype on")
+    os.system("bcdedit /set hypervisorlaunchtype auto")
     print("Enabling....")
     os.system("shutdown -r -t 0")    
 main()
